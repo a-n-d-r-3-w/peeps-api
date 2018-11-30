@@ -8,6 +8,11 @@ server.get('/accounts', function (req, res, next) {
   next()
 })
 
+server.post('/accounts', function (req, res, next) {
+  res.send(HttpStatus.CREATED, { accountId: 1 })
+  next()
+})
+
 server.listen(3000, function () {
   console.info('%s listening at %s', server.name, server.url)
 })
