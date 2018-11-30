@@ -3,13 +3,17 @@ const HttpStatus = require('http-status-codes')
 
 const server = restify.createServer()
 
+const accounts = []
+
 server.get('/accounts', function (req, res, next) {
-  res.send(HttpStatus.OK, { accounts: [] })
+  res.send(HttpStatus.OK, { accounts })
   next()
 })
 
 server.post('/accounts', function (req, res, next) {
-  res.send(HttpStatus.CREATED, { accountId: 1 })
+  const accountId = 1
+  accounts.push(accountId)
+  res.send(HttpStatus.CREATED, { accountId })
   next()
 })
 
