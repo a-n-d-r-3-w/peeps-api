@@ -1,0 +1,32 @@
+{
+  "name": "peeps-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node apiTest.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a-n-d-r-3-w/peeps-api.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/a-n-d-r-3-w/peeps-api/issues"
+  },
+  "homepage": "https://github.com/a-n-d-r-3-w/peeps-api#readme",
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "supertest": "^3.3.0"
+  },
+  "dependencies": {
+    "http-status-codes": "^1.3.0",
+    "restify": "^7.2.3"
+  }
+}
