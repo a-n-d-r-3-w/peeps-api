@@ -29,3 +29,12 @@ request.get('/accounts').expect(HttpStatus.OK, { accounts: [ 1 ] }, error => {
   }
   console.info('pass')
 })
+
+// Create another account
+request.post('/accounts').expect(HttpStatus.CREATED, { accountId: 2 }, error => {
+  if (error) {
+    console.error(error)
+    return
+  }
+  console.info('pass')
+})

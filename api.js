@@ -11,7 +11,7 @@ server.get('/accounts', function (req, res, next) {
 })
 
 server.post('/accounts', function (req, res, next) {
-  const accountId = 1
+  const accountId = accounts.length + 1
   accounts.push(accountId)
   res.send(HttpStatus.CREATED, { accountId })
   next()
