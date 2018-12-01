@@ -5,11 +5,13 @@ const server = restify.createServer()
 
 const accounts = []
 
+// Get all accounts
 server.get('/accounts', function (req, res, next) {
   res.send(HttpStatus.OK, { accounts })
   next()
 })
 
+// Create account
 server.post('/accounts', function (req, res, next) {
   const accountId = shortid.generate()
   accounts.push(accountId)
@@ -17,12 +19,14 @@ server.post('/accounts', function (req, res, next) {
   next()
 })
 
+// Delete all accounts
 server.del('/accounts', function (req, res, next) {
   accounts.splice(0)
   res.send(HttpStatus.NO_CONTENT)
   next()
 })
 
+// Delete specified account
 server.del('/accounts/:accountId', function (req, res, next) {
   const index = accounts.indexOf(req.params.accountId)
   if (index === -1) {
