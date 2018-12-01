@@ -23,6 +23,17 @@ server.del('/accounts', function (req, res, next) {
   next()
 })
 
+server.del('/accounts/:accountId', function (req, res, next) {
+  const index = accounts.indexOf(req.params.accountId)
+  if (index === -1) {
+    res.send(HttpStatus.NOT_FOUND)
+  } else {
+    accounts.splice(index, 1)
+    res.send(HttpStatus.NO_CONTENT)
+  }
+  next()
+})
+
 server.listen(3000, function () {
   console.info('%s listening at %s', server.name, server.url)
 })
