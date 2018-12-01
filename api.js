@@ -3,7 +3,21 @@ const HttpStatus = require('http-status-codes')
 const shortid = require('shortid')
 const server = restify.createServer()
 
-const accounts = []
+let accounts = []
+let peeps = []
+
+/*
+Data types:
+
+ - An account is simply a string that is the accountId, like this:
+   'IyNUaA1Ya'
+
+ - A peep is an object like this:
+   {
+     peepId: 'SPAUjEqrS'
+   }
+
+*/
 
 // Get all accounts
 server.get('/accounts', function (req, res, next) {
@@ -28,13 +42,36 @@ server.del('/accounts', function (req, res, next) {
 
 // Delete specified account
 server.del('/accounts/:accountId', function (req, res, next) {
-  const index = accounts.indexOf(req.params.accountId)
-  if (index === -1) {
-    res.send(HttpStatus.NOT_FOUND)
-  } else {
-    accounts.splice(index, 1)
-    res.send(HttpStatus.NO_CONTENT)
-  }
+  accounts = accounts.filter(accountId => accountId !== req.params.accountId)
+  res.send(HttpStatus.NO_CONTENT)
+  next()
+})
+
+// Get all peeps for an account
+server.get('/accounts/:accountId/peeps', function (req, res, next) {
+  res.send(HttpStatus.OK, { peeps })
+  next()
+})
+
+// Create a peep for an account
+server.post('/accounts/:accountId/peeps', function (req, res, next) {
+  const peepId = shortid.generate()
+  peeps.push({ peepId })
+  res.send(HttpStatus.CREATED, { peepId })
+  next()
+})
+
+// Delete all peeps for an account
+server.del('/accounts/:accountId/peeps', function (req, res, next) {
+  peeps.splice(0)
+  res.send(HttpStatus.NO_CONTENT)
+  next()
+})
+
+// Delete specified peep for an account
+server.del('/accounts/:accountId/peeps/:peepId', function (req, res, next) {
+  peeps = peeps.filter(peep => peep.peepId !== req.params.peepId)
+  res.send(HttpStatus.NO_CONTENT)
   next()
 })
 
