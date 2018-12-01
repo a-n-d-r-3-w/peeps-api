@@ -3,6 +3,8 @@ const HttpStatus = require('http-status-codes')
 const shortid = require('shortid')
 const server = restify.createServer()
 
+server.use(restify.plugins.bodyParser())
+
 let accounts = []
 let peeps = []
 
@@ -71,6 +73,14 @@ server.del('/accounts/:accountId/peeps', function (req, res, next) {
 // Delete specified peep for an account
 server.del('/accounts/:accountId/peeps/:peepId', function (req, res, next) {
   peeps = peeps.filter(peep => peep.peepId !== req.params.peepId)
+  res.send(HttpStatus.NO_CONTENT)
+  next()
+})
+
+// Update a peep for an account
+server.put('/accounts/:accountId/peeps/:peepId', function (req, res, next) {
+  const index = peeps.findIndex(peep => peep.peepId === req.params.peepId)
+  console.info(req.body)
   res.send(HttpStatus.NO_CONTENT)
   next()
 })
