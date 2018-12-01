@@ -80,7 +80,7 @@ server.del('/accounts/:accountId/peeps/:peepId', function (req, res, next) {
 // Update a peep for an account
 server.put('/accounts/:accountId/peeps/:peepId', function (req, res, next) {
   const index = peeps.findIndex(peep => peep.peepId === req.params.peepId)
-  console.info(req.body)
+  peeps[index] = { ...peeps[index], ...req.body }
   res.send(HttpStatus.NO_CONTENT)
   next()
 })
