@@ -1,6 +1,8 @@
 const restify = require('restify')
 const HttpStatus = require('http-status-codes')
 const shortid = require('shortid')
+const connectRunClose = require('./connectRunClose')
+
 const server = restify.createServer()
 
 server.use(restify.plugins.bodyParser())
@@ -22,16 +24,23 @@ Data types:
 */
 
 // Get all accounts
-server.get('/accounts', function (req, res, next) {
-  res.send(HttpStatus.OK, { accounts })
+server.get('/accounts', async (req, res, next) => {
+  const result = await connectRunClose('accounts', accounts => accounts.find({}).toArray())
+  res.send(HttpStatus.OK, { accounts: result })
   next()
 })
 
 // Create account
-server.post('/accounts', function (req, res, next) {
+server.post('/accounts', async (req, res, next) => {
   const accountId = shortid.generate()
-  accounts.push(accountId)
-  res.send(HttpStatus.CREATED, { accountId })
+
+  const result = await connectRunClose('accounts', accounts => accounts.insertOne({ accountId }));
+  if (result.result.ok === 1) {
+    res.send(HttpStatus.CREATED, { accountId })
+    next()
+    return
+  }
+  res.send(HttpStatus.INTERNAL_SERVER_ERROR)
   next()
 })
 
