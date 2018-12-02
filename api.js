@@ -33,8 +33,7 @@ server.get('/accounts', async (req, res, next) => {
 // Create account
 server.post('/accounts', async (req, res, next) => {
   const accountId = shortid.generate()
-
-  const result = await connectRunClose('accounts', accounts => accounts.insertOne({ accountId }));
+  const result = await connectRunClose('accounts', accounts => accounts.insertOne({ accountId }))
   if (result.result.ok === 1) {
     res.send(HttpStatus.CREATED, { accountId })
     next()
@@ -45,8 +44,8 @@ server.post('/accounts', async (req, res, next) => {
 })
 
 // Delete all accounts
-server.del('/accounts', function (req, res, next) {
-  accounts.splice(0)
+server.del('/accounts', async (req, res, next) => {
+  await connectRunClose('accounts', accounts => accounts.deleteMany({}))
   res.send(HttpStatus.NO_CONTENT)
   next()
 })
