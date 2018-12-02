@@ -41,7 +41,7 @@ server.get('/accounts/:accountId', async (req, res, next) => {
 // Create account
 server.post('/accounts', async (req, res, next) => {
   const accountId = shortid.generate()
-  const result = await connectRunClose('accounts', accounts => accounts.insertOne({ accountId }))
+  const result = await connectRunClose('accounts', accounts => accounts.insertOne({ accountId, peeps: [] }))
   if (result.result.ok === 1) {
     res.send(HttpStatus.CREATED, { accountId })
     next()
@@ -77,7 +77,7 @@ server.post('/accounts/:accountId/peeps', async (req, res, next) => {
   const { accountId } = req.params
 
   const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
-  const peeps = account.peeps || []
+  const { peeps } = account
 
   const peepId = shortid.generate()
   peeps.push({ peepId })
