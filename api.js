@@ -68,7 +68,7 @@ server.del('/accounts/:accountId', async (req, res, next) => {
 // Get all peeps for an account
 server.get('/accounts/:accountId/peeps', async (req, res, next) => {
   const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId: req.params.accountId }))
-  res.send(HttpStatus.OK, { peeps: account.peeps })
+  res.send(HttpStatus.OK, account.peeps)
   next()
 })
 
@@ -80,7 +80,7 @@ server.post('/accounts/:accountId/peeps', async (req, res, next) => {
   const peeps = account.peeps || []
 
   const peepId = shortid.generate()
-  peeps.push(peepId)
+  peeps.push({ peepId })
 
   await connectRunClose('accounts', accounts => accounts.updateOne(
     { accountId },
