@@ -7,14 +7,15 @@ const server = restify.createServer()
 
 server.use(restify.plugins.bodyParser())
 
-let accounts = []
-let peeps = []
-
 /*
 Data types:
 
- - An account is simply a string that is the accountId, like this:
-   'IyNUaA1Ya'
+ - An account is an object like this:
+   {
+     _id: <MongoDB document ID>
+     accountId: 'IyNUaA1Ya',
+     peeps: <Array of peeps>
+   }
 
  - A peep is an object like this:
    {
@@ -25,8 +26,15 @@ Data types:
 
 // Get all accounts
 server.get('/accounts', async (req, res, next) => {
-  const result = await connectRunClose('accounts', accounts => accounts.find({}).toArray())
-  res.send(HttpStatus.OK, { accounts: result })
+  const accounts = await connectRunClose('accounts', accounts => accounts.find({}).toArray())
+  res.send(HttpStatus.OK, accounts)
+  next()
+})
+
+// Get specific account
+server.get('/accounts/:accountId', async (req, res, next) => {
+  const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId: req.params.accountId }))
+  res.send(HttpStatus.OK, account)
   next()
 })
 
@@ -50,7 +58,7 @@ server.del('/accounts', async (req, res, next) => {
   next()
 })
 
-// Delete specified account
+// Delete specific account
 server.del('/accounts/:accountId', async (req, res, next) => {
   await connectRunClose('accounts', accounts => accounts.deleteOne({ accountId: req.params.accountId }))
   res.send(HttpStatus.NO_CONTENT)
@@ -58,15 +66,25 @@ server.del('/accounts/:accountId', async (req, res, next) => {
 })
 
 // Get all peeps for an account
-server.get('/accounts/:accountId/peeps', function (req, res, next) {
-  res.send(HttpStatus.OK, { peeps })
+server.get('/accounts/:accountId/peeps', async (req, res, next) => {
+  const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId: req.params.accountId }))
+  res.send(HttpStatus.OK, { peeps: account.peeps })
   next()
 })
 
 // Create a peep for an account
-server.post('/accounts/:accountId/peeps', function (req, res, next) {
+server.post('/accounts/:accountId/peeps', async (req, res, next) => {
+  const { accountId } = req.params
+
+  const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
+  const peeps = account.peeps || []
+
   const peepId = shortid.generate()
-  peeps.push({ peepId })
+  peeps.push(peepId)
+
+  await connectRunClose('accounts', accounts => accounts.updateOne(
+    { accountId },
+    { $set: { peeps } }))
   res.send(HttpStatus.CREATED, { peepId })
   next()
 })
