@@ -51,8 +51,8 @@ server.del('/accounts', async (req, res, next) => {
 })
 
 // Delete specified account
-server.del('/accounts/:accountId', function (req, res, next) {
-  accounts = accounts.filter(accountId => accountId !== req.params.accountId)
+server.del('/accounts/:accountId', async (req, res, next) => {
+  await connectRunClose('accounts', accounts => accounts.deleteOne({ accountId: req.params.accountId }))
   res.send(HttpStatus.NO_CONTENT)
   next()
 })
