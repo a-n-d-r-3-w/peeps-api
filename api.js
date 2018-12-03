@@ -90,8 +90,11 @@ server.post('/accounts/:accountId/peeps', async (req, res, next) => {
 })
 
 // Delete all peeps for an account
-server.del('/accounts/:accountId/peeps', function (req, res, next) {
-  peeps.splice(0)
+server.del('/accounts/:accountId/peeps', async (req, res, next) => {
+  const { accountId } = req.params
+  await connectRunClose('accounts', accounts => accounts.updateOne(
+    { accountId },
+    { $set: { peeps: [] } }))
   res.send(HttpStatus.NO_CONTENT)
   next()
 })
