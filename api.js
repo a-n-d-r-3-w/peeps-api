@@ -100,8 +100,15 @@ server.del('/accounts/:accountId/peeps', async (req, res, next) => {
 })
 
 // Delete specified peep for an account
-server.del('/accounts/:accountId/peeps/:peepId', function (req, res, next) {
-  peeps = peeps.filter(peep => peep.peepId !== req.params.peepId)
+server.del('/accounts/:accountId/peeps/:peepId', async (req, res, next) => {
+  const { accountId, peepId } = req.params
+  const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
+  const { peeps } = account
+  const index = peeps.findIndex(peep => peep.peepId === peepId)
+  peeps.splice(index, 1)
+  await connectRunClose('accounts', accounts => accounts.updateOne(
+    { accountId },
+    { $set: { peeps } }))
   res.send(HttpStatus.NO_CONTENT)
   next()
 })
