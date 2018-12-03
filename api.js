@@ -33,7 +33,8 @@ server.get('/accounts', async (req, res, next) => {
 
 // Get specific account
 server.get('/accounts/:accountId', async (req, res, next) => {
-  const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId: req.params.accountId }))
+  const { accountId } = req.params
+  const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
   res.send(HttpStatus.OK, account)
   next()
 })
@@ -67,21 +68,20 @@ server.del('/accounts/:accountId', async (req, res, next) => {
 
 // Get all peeps for an account
 server.get('/accounts/:accountId/peeps', async (req, res, next) => {
-  const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId: req.params.accountId }))
-  res.send(HttpStatus.OK, account.peeps)
+  const { accountId } = req.params
+  const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
+  const { peeps } = account
+  res.send(HttpStatus.OK, peeps)
   next()
 })
 
 // Create a peep for an account
 server.post('/accounts/:accountId/peeps', async (req, res, next) => {
   const { accountId } = req.params
-
   const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
   const { peeps } = account
-
   const peepId = shortid.generate()
   peeps.push({ peepId })
-
   await connectRunClose('accounts', accounts => accounts.updateOne(
     { accountId },
     { $set: { peeps } }))
