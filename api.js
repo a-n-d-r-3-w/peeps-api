@@ -114,9 +114,15 @@ server.del('/accounts/:accountId/peeps/:peepId', async (req, res, next) => {
 })
 
 // Update a peep for an account
-server.put('/accounts/:accountId/peeps/:peepId', function (req, res, next) {
-  const index = peeps.findIndex(peep => peep.peepId === req.params.peepId)
+server.put('/accounts/:accountId/peeps/:peepId', async (req, res, next) => {
+  const { accountId, peepId } = req.params
+  const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
+  const { peeps } = account
+  const index = peeps.findIndex(peep => peep.peepId === peepId)
   peeps[index] = { ...peeps[index], ...req.body }
+  await connectRunClose('accounts', accounts => accounts.updateOne(
+    { accountId },
+    { $set: { peeps } }))
   res.send(HttpStatus.NO_CONTENT)
   next()
 })
