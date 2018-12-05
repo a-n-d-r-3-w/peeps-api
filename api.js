@@ -76,6 +76,16 @@ server.get('/accounts/:accountId/peeps', async (req, res, next) => {
   next()
 })
 
+// Get specific peep for an account
+server.get('/accounts/:accountId/peeps/:peepId', async (req, res, next) => {
+  const { accountId, peepId } = req.params
+  const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
+  const { peeps } = account
+  const index = peeps.findIndex(peep => peep.peepId === peepId)
+  res.send(HttpStatus.OK, peeps[index])
+  next()
+})
+
 // Create a peep for an account
 server.post('/accounts/:accountId/peeps', async (req, res, next) => {
   const { accountId } = req.params
