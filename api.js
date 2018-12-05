@@ -1,3 +1,4 @@
+require('dotenv').config()
 const restify = require('restify')
 const HttpStatus = require('http-status-codes')
 const shortid = require('shortid')
