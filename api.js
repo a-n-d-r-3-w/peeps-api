@@ -25,6 +25,12 @@ Data types:
 
 */
 
+// Health
+server.get('/health', (req, res, next) => {
+  res.send(HttpStatus.OK, 'App is okay.')
+  next()
+})
+
 // Get all accounts
 server.get('/accounts', async (req, res, next) => {
   const accounts = await connectRunClose('accounts', accounts => accounts.find({}).toArray())
