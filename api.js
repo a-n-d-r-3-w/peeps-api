@@ -145,6 +145,11 @@ server.put('/accounts/:accountId/peeps/:peepId', async (req, res, next) => {
   next()
 })
 
-server.listen(3000, function () {
+let port = process.env.PORT
+if (port == null || port === '') {
+  port = 8000
+}
+
+server.listen(port, function () {
   console.info('%s listening at %s', server.name, server.url)
 })
