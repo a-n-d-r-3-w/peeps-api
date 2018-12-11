@@ -51,6 +51,11 @@ server.get('/accounts', async (req, res, next) => {
 server.get('/accounts/:accountId', async (req, res, next) => {
   const { accountId } = req.params
   const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
+  if (account === null) {
+    res.send(HttpStatus.NOT_FOUND)
+    next()
+    return
+  }
   res.send(HttpStatus.OK, account)
   next()
 })
