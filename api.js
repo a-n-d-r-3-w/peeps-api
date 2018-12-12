@@ -29,7 +29,8 @@ Data types:
 
  - A peep is an object like this:
    {
-     peepId: 'SPAUjEqrS'
+     peepId: 'SPAUjEqrS',
+     items: <Array of items>
    }
 
 */
@@ -92,6 +93,11 @@ server.del('/accounts/:accountId', async (req, res, next) => {
 server.get('/accounts/:accountId/peeps', async (req, res, next) => {
   const { accountId } = req.params
   const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
+  if (account === null) {
+    res.send(HttpStatus.NOT_FOUND)
+    next()
+    return
+  }
   const { peeps } = account
   res.send(HttpStatus.OK, peeps)
   next()
@@ -113,11 +119,15 @@ server.post('/accounts/:accountId/peeps', async (req, res, next) => {
   const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
   const { peeps } = account
   const peepId = shortid.generate()
-  peeps.push({ peepId })
+  const peep = {
+    peepId,
+    items: []
+  }
+  peeps.push(peep)
   await connectRunClose('accounts', accounts => accounts.updateOne(
     { accountId },
     { $set: { peeps } }))
-  res.send(HttpStatus.CREATED, { peepId })
+  res.send(HttpStatus.CREATED, peep)
   next()
 })
 
