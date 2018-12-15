@@ -121,7 +121,12 @@ server.post('/accounts/:accountId/peeps', async (req, res, next) => {
   const peepId = shortid.generate()
   const peep = {
     peepId,
-    items: []
+    name: 'Elliot Alderson',
+    items: [
+      'hacker and cybersecurity engineer',
+      'in fsociety',
+      'works at e corp',
+    ]
   }
   peeps.push(peep)
   await connectRunClose('accounts', accounts => accounts.updateOne(
