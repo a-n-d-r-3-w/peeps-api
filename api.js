@@ -2,6 +2,7 @@ require('dotenv').config()
 const restify = require('restify')
 const HttpStatus = require('http-status-codes')
 const shortid = require('shortid')
+const faker = require('faker')
 const connectRunClose = require('./connectRunClose')
 
 const server = restify.createServer()
@@ -121,10 +122,8 @@ server.post('/accounts/:accountId/peeps', async (req, res, next) => {
   const peepId = shortid.generate()
   const peep = {
     peepId,
-    name: 'Elliot Alderson',
-    info: 'hacker and cybersecurity engineer\n' +
-      'in fsociety\n' +
-      'works at e corp'
+    name: faker.name.findName(),
+    info: faker.lorem.lines()
   }
   peeps.push(peep)
   await connectRunClose('accounts', accounts => accounts.updateOne(
