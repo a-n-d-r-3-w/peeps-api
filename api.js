@@ -30,7 +30,7 @@ Data types:
  - A peep is an object like this:
    {
      peepId: 'SPAUjEqrS',
-     items: <Array of items>
+     info: <String with newlines: \n>
    }
 
 */
@@ -122,11 +122,9 @@ server.post('/accounts/:accountId/peeps', async (req, res, next) => {
   const peep = {
     peepId,
     name: 'Elliot Alderson',
-    items: [
-      'hacker and cybersecurity engineer',
-      'in fsociety',
-      'works at e corp',
-    ]
+    info: 'hacker and cybersecurity engineer\n' +
+      'in fsociety\n' +
+      'works at e corp'
   }
   peeps.push(peep)
   await connectRunClose('accounts', accounts => accounts.updateOne(
