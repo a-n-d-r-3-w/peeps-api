@@ -120,13 +120,26 @@ server.get('/accounts/:accountId/peeps/:peepId', async (req, res, next) => {
 
 // Create a peep for an account
 server.post('/accounts/:accountId/peeps', async (req, res, next) => {
+  if (!req.body) {
+    res.send(HttpStatus.BAD_REQUEST, 'Name is missing.')
+    next()
+    return
+  }
+
+  const { name } = req.body
+  if (name.trim().length === 0) {
+    res.send(HttpStatus.BAD_REQUEST, 'Name is empty.')
+    next()
+    return
+  }
+
   const { accountId } = req.params
   const account = await connectRunClose('accounts', accounts => accounts.findOne({ accountId }))
   const { peeps } = account
   const peepId = shortid.generate()
   const peep = {
     peepId,
-    name: faker.name.findName(),
+    name: req.body.name,
     info: faker.lorem.lines()
   }
   peeps.push(peep)
