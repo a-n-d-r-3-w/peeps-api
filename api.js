@@ -104,6 +104,17 @@ server.get('/accounts/:accountId/peeps', async (req, res, next) => {
     return
   }
   const { peeps } = account
+  peeps.sort((peep1, peep2) => {
+    const name1 = peep1.name.toLowerCase()
+    const name2 = peep2.name.toLowerCase()
+    if (name1 < name2) {
+      return -1
+    }
+    if (name1 > name2) {
+      return 1
+    }
+    return 0
+  })
   res.send(HttpStatus.OK, peeps)
   next()
 })
