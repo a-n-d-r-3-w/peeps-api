@@ -2,7 +2,6 @@ require('dotenv').config()
 const restify = require('restify')
 const HttpStatus = require('http-status-codes')
 const shortid = require('shortid')
-const faker = require('faker')
 const corsMiddleware = require('restify-cors-middleware')
 
 const connectRunClose = require('./connectRunClose')
@@ -151,7 +150,7 @@ server.post('/accounts/:accountId/peeps', async (req, res, next) => {
   const peep = {
     peepId,
     name: req.body.name,
-    info: faker.lorem.lines()
+    info: ''
   }
   peeps.push(peep)
   await connectRunClose('accounts', accounts => accounts.updateOne(
