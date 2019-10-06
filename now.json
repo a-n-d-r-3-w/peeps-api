@@ -1,5 +1,0 @@
-{
-  "env": {
-    "DB_URL": "@peeps-db-url"
-  }
-}
